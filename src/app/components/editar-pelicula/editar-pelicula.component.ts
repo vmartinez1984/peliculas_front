@@ -65,36 +65,19 @@ export class EditarPeliculaComponent {
         this.pelicula = data;
         //this.trailer = data.trailer;
         console.log(data);
-        
+
         this.pelicula.poster =
           this.servicio.baseUrl + this.pelicula.id + '/posters';
-       
+
         this.formGroup.patchValue({
           titulo: this.pelicula.titulo,
           resumen: this.pelicula.resumen,
-       
         });
       },
       error: (error) => {
         console.log(error);
       },
     });
-  }
-
-  obtenerUrlYoutubeEmbebed(url: any): SafeResourceUrl {
-    if (!url) {
-      return '';
-    }
-
-    var video_id = url.split('v=')[1];
-    var posisionAmpersan = video_id.indexOf('&');
-    if (posisionAmpersan !== -1) {
-      video_id = video_id.substring(0, posisionAmpersan);
-    }
-
-    return this.sanitizer.bypassSecurityTrustResourceUrl(
-      `https://www.youtube.com/embed/${video_id}`
-    );
   }
 
   toBase64(file: File) {
@@ -122,9 +105,10 @@ export class EditarPeliculaComponent {
     if (this.formGroup.valid) {
       let peliculaDotIn: PeliculaDtoIn = {
         resumen: this.formGroup.value.resumen,
-        titulo: this.formGroup.value.titulo,        
-        
+        titulo: this.formGroup.value.titulo
       };
+      if(this.poster)
+        peliculaDotIn.poster = this.poster
       console.log(peliculaDotIn);
       this.servicio.actualizar(this.pelicula!.id, peliculaDotIn).subscribe({
         next: (data) => {
